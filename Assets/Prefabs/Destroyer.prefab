@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.12770261
+      value: 0.049819343
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.12770261
+      value: 0.049819343
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.12770261
+      value: 0.049819343
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
       propertyPath: m_LocalPosition.x
@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
       propertyPath: m_Name
-      value: 'kapal sedang '
+      value: Destroyer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -80,6 +80,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7461372244596424081}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4232492339491961839}
   m_SourcePrefab: {fileID: 100100000, guid: 46086eedb59ff7d4797b8b571749d759, type: 3}
 --- !u!1 &4683325232906854999 stripped
 GameObject:
@@ -111,6 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b44e8a58d07f2248bfa5336bf53e7c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShipMovementInputSystem
+  ship: {fileID: 0}
   moveSpeed: 5
 --- !u!114 &3545090850770482640
 MonoBehaviour:
@@ -146,3 +150,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.188715, y: 0.85770494, z: 0.72999966}
   m_Center: {x: -0.21936044, y: -0.07114655, z: 0}
+--- !u!114 &4232492339491961839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683325232906854999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f1ed1ac7734b154a975bd1825db54d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShipBase
+  moveRange: 3
+  moveCost: 1
+  maxHP: 10
+  shipName: Base Ship
+  gridPos: {x: 0, y: 0}

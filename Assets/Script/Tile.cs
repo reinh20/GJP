@@ -3,6 +3,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     public Vector2Int gridPos;
+    public Transform unitSocket;
 
     private Renderer rend;
     private Color baseColor;
