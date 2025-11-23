@@ -4,7 +4,7 @@ public class Submarine : ShipBase
 {
     void Start()
     {
-        shipName = "Submarine";
+        shipName = "Scout";
         moveRange = 5;
         moveCost = 2;
         maxHP = 6;
