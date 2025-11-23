@@ -6,7 +6,7 @@ public class GridGenerator : MonoBehaviour
     public int width = 10;
     public int height = 10;
     public float hexRadius = 1f;
-    public float gap = 0.0f; // Tambahan opsional untuk jarak antar hex
+    public float gap = 0.0f;
 
     void Start()
     {
@@ -15,17 +15,11 @@ public class GridGenerator : MonoBehaviour
 
     void GenerateHexGrid()
     {
-        // --- PERBAIKAN DIMENSI (Matematika Heksagon) ---
-        // Untuk Pointy Topped (Sudut menghadap atas/bawah):
-        // Lebar (Horizontal) = sqrt(3) * radius
-        // Tinggi (Vertikal) = 2 * radius
-
         float hexWidth = Mathf.Sqrt(3) * hexRadius;
         float hexHeight = 2f * hexRadius;
 
-        // Tambahkan gap jika perlu
         float xDist = hexWidth + gap;
-        float yDist = hexHeight * 0.75f; // Jarak vertikal antar baris adalah 3/4 tinggi
+        float yDist = hexHeight * 0.75f;
 
         for (int y = 0; y < height; y++)
         {
@@ -33,25 +27,42 @@ public class GridGenerator : MonoBehaviour
             {
                 float xPos = x * xDist;
 
-                // --- PERBAIKAN OFFSET ---
-                // Setiap baris ganjil digeser setengah dari lebar heksagon
                 if (y % 2 == 1)
                 {
                     xPos += xDist * 0.5f;
                 }
 
-                // Posisi Y
-                float yPos = y * yDist; // Menggunakan yDist yang sudah dikali 0.75
+                float yPos = y * yDist;
 
                 Vector3 pos = new Vector3(xPos, 0, yPos);
 
                 GameObject hex = Instantiate(hexPrefab, pos, Quaternion.identity);
-
-                // Pastikan rotasi sesuai dengan prefab Anda
                 hex.transform.rotation = Quaternion.Euler(90, 0, 0);
-
-                // Opsional: Jadikan hierarki rapi
                 hex.transform.SetParent(this.transform);
+
+                // ==========================================================
+                // BAGIAN DI BAWAH INI ADALAH TAMBAHAN YANG ANDA BUTUHKAN
+                // AGAR COST DAN JARAK BISA DIHITUNG
+                // ==========================================================
+
+                // 1. Ubah nama objek di Hierarchy biar rapi (Contoh: Hexagon 0,0)
+                hex.name = $"Hexagon {x},{y}";
+
+                // 2. Ambil script 'Tile' dari prefab yang baru dibuat
+                Tile tileScript = hex.GetComponent<Tile>();
+
+                if (tileScript != null)
+                {
+                    // 3. ISI KOORDINATNYA!
+                    // Ini langkah paling krusial. Kita masukkan 'x' dan 'y' loop
+                    // ke dalam variabel gridPos milik Tile.
+                    tileScript.gridPos = new Vector2Int(x, y);
+                }
+                else
+                {
+                    Debug.LogError("ERROR: Prefab Hexagon Anda belum dipasangi script 'Tile'!");
+                }
+                // ==========================================================
             }
         }
     }

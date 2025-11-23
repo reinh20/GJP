@@ -3,9 +3,9 @@ using UnityEngine;
 public class ShipBase : MonoBehaviour
 {
     // Stat kapal dasar (bisa di-overwrite oleh class turunan)
-    public int moveRange = 3;
-    public int moveCost = 1;
-    public int maxHP = 10;
+    public int moveRange;
+    public int moveCost;
+    public int maxHP;
     public string shipName = "Base Ship";
 
     // Grid position
