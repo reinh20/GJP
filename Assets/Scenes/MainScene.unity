@@ -772,8 +772,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridDenerator
   hexPrefab: {fileID: 7293443577223831249, guid: 9f6e2f849d69e2e4e8d699844db3d28d, type: 3}
-  width: 10
-  height: 10
+  width: 50
+  height: 50
   hexRadius: 0.052
   gap: 0
 --- !u!4 &1604232111
@@ -896,7 +896,7 @@ MonoBehaviour:
   moveRange: 3
   moveCost: 1
   maxHP: 10
-  shipName: Base Ship
+  shipName: kapal besar
   gridPos: {x: 0, y: 0}
 --- !u!114 &1860552429
 MonoBehaviour:
@@ -905,7 +905,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221620417}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f1ed1ac7734b154a975bd1825db54d9, type: 3}
   m_Name: 
@@ -1176,6 +1176,10 @@ PrefabInstance:
       propertyPath: ship
       value: 
       objectReference: {fileID: 1860552429}
+    - target: {fileID: 7237768511196697710, guid: 56d2e39f8f02b0a439416597f14189e0, type: 3}
+      propertyPath: defaultMoveCost
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

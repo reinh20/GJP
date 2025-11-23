@@ -2,20 +2,22 @@ using UnityEngine;
 
 public class ShipMovementInputSystem : MonoBehaviour
 {
-    public ShipBase ship;       // <--- ini adalah kapal induk / turunan
+    public ShipBase ship;
     private bool isMoving = false;
     private Vector3 targetPos;
 
+    [Header("Settings")]
     public float moveSpeed = 5f;
+
+    // Pastikan ini diisi 1 atau lebih di inspector jika ShipBase tidak punya variabel cost sendiri
+    public int defaultMoveCost = 1;
 
     void Start()
     {
         ship = GetComponent<ShipBase>();
-        if (ship == null)
-            Debug.LogError("ShipBase tidak ditemukan!");
+        if (ship == null) Debug.LogError("ShipBase tidak ditemukan!");
 
-        // Debug posisi awal
-        Debug.Log($"{ship.shipName} start grid = {ship.gridPos}");
+        Debug.Log($"{ship.shipName} Start Grid: {ship.gridPos} | TP Awal: {GameManager.Instance.TP}");
     }
 
     void Update()
@@ -28,46 +30,76 @@ public class ShipMovementInputSystem : MonoBehaviour
             {
                 transform.position = targetPos;
                 isMoving = false;
+
+                // Debug setelah sampai
+                Debug.Log($"Sampai di tujuan. Sisa TP: {GameManager.Instance.TP}");
             }
         }
-
     }
 
     public void MoveToTile(Tile tile)
     {
-        int distance = Mathf.Abs(tile.gridPos.x - ship.gridPos.x) +
-                        Mathf.Abs(tile.gridPos.y - ship.gridPos.y);
-        int cost = distance * ship.moveCost;
+        if (isMoving) return; // Cegah spam klik saat sedang jalan
 
-        // Ship has moveRange limitation
-        if (GameManager.Instance.TP >= cost)
+        // 1. HITUNG JARAK HEXAGON YANG BENAR
+        int distance = GetHexDistance(ship.gridPos, tile.gridPos);
+
+        // 2. HITUNG COST
+        // Ambil cost dari ship (jika ada) atau pakai default
+        int costPerTile = (ship.moveCost > 0) ? ship.moveCost : defaultMoveCost;
+        int totalCost = distance * costPerTile;
+
+        Debug.Log($"Jarak: {distance} Tile | Cost: {totalCost} TP | TP Saat Ini: {GameManager.Instance.TP}");
+
+        // 3. CEK RANGE (Opsional)
+        if (distance > ship.moveRange)
         {
-            GameManager.Instance.TP -= cost;
+            Debug.LogWarning($"Kejauhan! Jarak {distance}, Range Kapal {ship.moveRange}");
+            return;
+        }
 
-            // --- BAGIAN BARU (LEBIH SIMPEL) ---
+        // 4. CEK APAKAH TP CUKUP
+        if (GameManager.Instance.TP >= totalCost)
+        {
+            // Kurangi TP
+            GameManager.Instance.TP -= totalCost;
 
-            // Kita langsung ambil posisi socket. 
-            // Karena socket sudah kita atur tingginya di Prefab, kapal akan pas posisinya.
+            // Pindah Visual
             if (tile.unitSocket != null)
             {
                 targetPos = tile.unitSocket.position;
             }
             else
             {
-                // Fallback (jaga-jaga lupa pasang socket)
                 targetPos = tile.transform.position;
                 targetPos.y = transform.position.y;
-                Debug.LogWarning($"Tile {tile.name} lupa dipasang UnitSocket!");
             }
 
-            // ----------------------------------
-
+            // Update Data Grid
             ship.SetGridPos(tile.gridPos);
             isMoving = true;
         }
         else
         {
-            Debug.Log("Tidak cukup TP untuk bergerak!");
+            Debug.LogError($"Gagal Pindah! Butuh {totalCost} TP, cuma punya {GameManager.Instance.TP} TP.");
         }
+    }
+
+    // --- RUMUS MATEMATIKA HEXAGON (Odd-Row Offset) ---
+    // Fungsi ini mengubah koordinat Grid biasa menjadi jarak Hexagon yang akurat
+    private int GetHexDistance(Vector2Int a, Vector2Int b)
+    {
+        // Jika game Anda hanya membolehkan pindah 1 tile per giliran (hanya tetangga),
+        // cukup return 1. Tapi jika bisa loncat jauh, gunakan rumus di bawah:
+
+        // Konversi Offset Coordinates ke Axial Coordinates
+        int a_q = a.x - (a.y - (a.y & 1)) / 2;
+        int a_r = a.y;
+
+        int b_q = b.x - (b.y - (b.y & 1)) / 2;
+        int b_r = b.y;
+
+        // Hitung jarak Axial
+        return (Mathf.Abs(a_q - b_q) + Mathf.Abs(a_q + a_r - b_q - b_r) + Mathf.Abs(a_r - b_r)) / 2;
     }
 }
