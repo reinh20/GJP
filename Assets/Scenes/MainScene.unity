@@ -859,8 +859,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09f6c38db80f330489a20f98b421a74d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  state: 0
   TP: 5
   maxTP: 5
+  turnCount: 1
 --- !u!4 &1853992751
 Transform:
   m_ObjectHideFlags: 0
