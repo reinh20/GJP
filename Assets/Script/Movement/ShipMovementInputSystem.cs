@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ShipMovementInputSystem : MonoBehaviour
 {
-    private ShipBase ship;       // <--- ini adalah kapal induk / turunan
+    public ShipBase ship;       // <--- ini adalah kapal induk / turunan
     private bool isMoving = false;
     private Vector3 targetPos;
 
@@ -25,39 +25,49 @@ public class ShipMovementInputSystem : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, targetPos) < 0.05f)
+            {
+                transform.position = targetPos;
                 isMoving = false;
+            }
         }
+
     }
 
     public void MoveToTile(Tile tile)
     {
         int distance = Mathf.Abs(tile.gridPos.x - ship.gridPos.x) +
                         Mathf.Abs(tile.gridPos.y - ship.gridPos.y);
-
-        // Ship has moveRange limitation
-        if (distance > ship.moveRange)
-        {
-            Debug.Log($"{ship.shipName} tidak bisa bergerak sejauh itu!");
-            return;
-        }
-
         int cost = distance * ship.moveCost;
 
-        Debug.Log($"[{ship.shipName}] TP sebelum: {GameManager.Instance.TP}");
-        Debug.Log($"Distance: {distance} | Cost: {cost}");
-
+        // Ship has moveRange limitation
         if (GameManager.Instance.TP >= cost)
         {
             GameManager.Instance.TP -= cost;
-            Debug.Log($"[{ship.shipName}] TP sesudah: {GameManager.Instance.TP}");
+
+            // --- BAGIAN BARU (LEBIH SIMPEL) ---
+
+            // Kita langsung ambil posisi socket. 
+            // Karena socket sudah kita atur tingginya di Prefab, kapal akan pas posisinya.
+            if (tile.unitSocket != null)
+            {
+                targetPos = tile.unitSocket.position;
+            }
+            else
+            {
+                // Fallback (jaga-jaga lupa pasang socket)
+                targetPos = tile.transform.position;
+                targetPos.y = transform.position.y;
+                Debug.LogWarning($"Tile {tile.name} lupa dipasang UnitSocket!");
+            }
+
+            // ----------------------------------
 
             ship.SetGridPos(tile.gridPos);
-            targetPos = tile.transform.position;
             isMoving = true;
         }
         else
         {
-            Debug.Log($"{ship.shipName} tidak cukup TP!");
+            Debug.Log("Tidak cukup TP untuk bergerak!");
         }
     }
 }
